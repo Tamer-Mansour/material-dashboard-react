@@ -1,19 +1,15 @@
 /**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
+ * =========================================================
+ * Material Dashboard 2 React - v2.2.0
+ * =========================================================
+ * Product Page: https://www.creative-tim.com/product/material-dashboard-react
+ * Copyright 2023 Creative Tim (https://www.creative-tim.com)
+ * Coded by www.creative-tim.com
+ * =========================================================
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ */
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 
 // react-router components
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
@@ -32,16 +28,7 @@ import Configurator from "examples/Configurator";
 
 // Material Dashboard 2 React themes
 import theme from "assets/theme";
-import themeRTL from "assets/theme/theme-rtl";
-
-// Material Dashboard 2 React Dark Mode themes
 import themeDark from "assets/theme-dark";
-import themeDarkRTL from "assets/theme-dark/theme-rtl";
-
-// RTL plugins
-import rtlPlugin from "stylis-plugin-rtl";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
 
 // Material Dashboard 2 React routes
 import routes from "routes";
@@ -52,12 +39,24 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 // Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
+import Dashboard from "layouts/dashboard";
+import Tables from "layouts/tables";
+import Notifications from "layouts/notifications";
+import Profile from "layouts/profile";
+import SignIn from "layouts/authentication/sign-in";
+import SignUp from "layouts/authentication/sign-up";
+import ProtectedRoute from "examples/ProtectedRoute";
+import Billing from "layouts/billing";
+import ChapterList from "layouts/chapters/ChapterList";
+import AddChapter from "layouts/chapters/AddChapter";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [onMouseEnter, setOnMouseEnter] = useState(false);
+  const { pathname } = useLocation();
   const {
     miniSidenav,
-    direction,
     layout,
     openConfigurator,
     sidenavColor,
@@ -65,18 +64,13 @@ export default function App() {
     whiteSidenav,
     darkMode,
   } = controller;
-  const [onMouseEnter, setOnMouseEnter] = useState(false);
-  const [rtlCache, setRtlCache] = useState(null);
-  const { pathname } = useLocation();
-
-  // Cache for the rtl
-  useMemo(() => {
-    const cacheRtl = createCache({
-      key: "rtl",
-      stylisPlugins: [rtlPlugin],
-    });
-
-    setRtlCache(cacheRtl);
+  // TODO: synchronize login with local storage
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    console.log("token: " + token);
+    if (token) {
+      setIsLoggedIn(true);
+    }
   }, []);
 
   // Open sidenav when mouse enter on mini sidenav
@@ -98,11 +92,6 @@ export default function App() {
   // Change the openConfigurator state
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
 
-  // Setting the dir attribute for the body element
-  useEffect(() => {
-    document.body.setAttribute("dir", direction);
-  }, [direction]);
-
   // Setting page scroll to 0 when changing the route
   useEffect(() => {
     document.documentElement.scrollTop = 0;
@@ -115,10 +104,18 @@ export default function App() {
         return getRoutes(route.collapse);
       }
 
-      if (route.route) {
-        return <Route exact path={route.route} element={route.component} key={route.key} />;
+      if (route.route && route.type !== "auth") {
+        return (
+          <Route
+            exact
+            path={route.route}
+            element={
+              <ProtectedRoute isAuthenticated={isLoggedIn}>{route.component}</ProtectedRoute>
+            }
+            key={route.key}
+          />
+        );
       }
-
       return null;
     });
 
@@ -146,32 +143,7 @@ export default function App() {
     </MDBox>
   );
 
-  return direction === "rtl" ? (
-    <CacheProvider value={rtlCache}>
-      <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
-        <CssBaseline />
-        {layout === "dashboard" && (
-          <>
-            <Sidenav
-              color={sidenavColor}
-              brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-              brandName="Material Dashboard 2"
-              routes={routes}
-              onMouseEnter={handleOnMouseEnter}
-              onMouseLeave={handleOnMouseLeave}
-            />
-            <Configurator />
-            {configsButton}
-          </>
-        )}
-        {layout === "vr" && <Configurator />}
-        <Routes>
-          {getRoutes(routes)}
-          <Route path="*" element={<Navigate to="/dashboard" />} />
-        </Routes>
-      </ThemeProvider>
-    </CacheProvider>
-  ) : (
+  return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
       {layout === "dashboard" && (
@@ -179,7 +151,7 @@ export default function App() {
           <Sidenav
             color={sidenavColor}
             brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-            brandName="Material Dashboard 2"
+            brandName="Admin Dashboard"
             routes={routes}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
@@ -190,7 +162,70 @@ export default function App() {
       )}
       {layout === "vr" && <Configurator />}
       <Routes>
+        <Route path="authentication/sign-in" element={<SignIn />} />
+        <Route path="authentication/sign-up" element={<SignUp />} />
+
         {getRoutes(routes)}
+
+        <Route path="profile" element={<Profile />} />
+        <Route
+          path="dashboard"
+          element={
+            <ProtectedRoute isAuthenticated={isLoggedIn}>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        {/* <Route path="tables" element={<Tables />} /> */}
+        <Route
+          path="notifications"
+          element={
+            <ProtectedRoute isAuthenticated={isLoggedIn}>
+              <Notifications />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          exact
+          path="tables"
+          element={
+            <ProtectedRoute isAuthenticated={isLoggedIn}>
+              <Tables />
+            </ProtectedRoute>
+          }
+          key="tables"
+        />
+        <Route
+          exact
+          path="billing"
+          element={
+            <ProtectedRoute isAuthenticated={isLoggedIn}>
+              <Billing />
+            </ProtectedRoute>
+          }
+          key="tables"
+        />
+        {/* ************* */}
+        <Route
+          exact
+          path="chapters"
+          element={
+            <ProtectedRoute isAuthenticated={isLoggedIn}>
+              <ChapterList />
+            </ProtectedRoute>
+          }
+          key="tables"
+        />
+        <Route
+          exact
+          path="chapters/add"
+          element={
+            <ProtectedRoute isAuthenticated={isLoggedIn}>
+              <AddChapter />
+            </ProtectedRoute>
+          }
+          key="tables"
+        />
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </ThemeProvider>

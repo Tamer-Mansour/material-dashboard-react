@@ -18,16 +18,68 @@ Coded by www.creative-tim.com
   you can customize the states for the different components here.
 */
 
-import { createContext, useContext, useReducer, useMemo } from "react";
+import { createContext, useContext, useReducer, useMemo, useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // prop-types is a library for typechecking of props
-import PropTypes from "prop-types";
 
 // Material Dashboard 2 React main context
 const MaterialUI = createContext();
 
 // Setting custom name for the context which is visible on react dev tools
 MaterialUI.displayName = "MaterialUIContext";
+
+
+// authentication context
+export const AuthContext = createContext({
+  isAuthenticated: false,
+  login: () => {},
+  register: () => {},
+  logout: () => {},
+});
+
+const AuthContextProvider = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const token = localStorage.getItem("token");
+  console.log("token"+ token);
+
+  useEffect(() => {
+    if (!token) return;
+
+    setIsAuthenticated(true);
+    navigate(location.pathname);
+  }, []);
+
+  useEffect(() => {
+    if (!token) return;
+
+    setIsAuthenticated(isAuthenticated);
+    navigate(location.pathname);
+  }, [isAuthenticated]);
+
+  const login = (token) => {
+    localStorage.setItem("token", token);
+    setIsAuthenticated(true);
+    navigate("/dashboard");
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setIsAuthenticated(false);
+    navigate("/auth/login");
+  };
+
+  return (
+    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
 
 // Material Dashboard 2 React reducer
 function reducer(state, action) {
@@ -121,6 +173,7 @@ const setLayout = (dispatch, value) => dispatch({ type: "LAYOUT", value });
 const setDarkMode = (dispatch, value) => dispatch({ type: "DARKMODE", value });
 
 export {
+  AuthContextProvider,
   MaterialUIControllerProvider,
   useMaterialUIController,
   setMiniSidenav,
