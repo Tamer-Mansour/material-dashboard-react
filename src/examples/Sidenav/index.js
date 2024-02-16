@@ -83,7 +83,6 @@ function Sidenav({ color, brand, brandName, ...rest }) {
     return () => window.removeEventListener("resize", handleMiniSidenav);
   }, [dispatch, location]);
 
-
   const sideNavItems = [
     <NavLink key="dashboard" to="/dashboard">
       <SidenavCollapse
@@ -121,19 +120,19 @@ function Sidenav({ color, brand, brandName, ...rest }) {
       />
     </NavLink>,
     <NavLink key="chapters" to="/chapters">
-    <SidenavCollapse
-      name="Chapters"
-      icon={<Icon fontSize="small">receipt_long</Icon>}
-      active={collapseName === "chapters"}
-    />
-  </NavLink>,
-  <NavLink key="add_chapters" to="/chapters/add">
-  <SidenavCollapse
-    name="Add chapters"
-    icon={<Icon fontSize="small">receipt_long</Icon>}
-    active={collapseName === "add_chapters"}
-  />
-</NavLink>,
+      <SidenavCollapse
+        name="Chapters"
+        icon={<Icon fontSize="small">receipt_long</Icon>}
+        active={collapseName === "chapters"}
+      />
+    </NavLink>,
+    <NavLink key="ide" to="/ide">
+      <SidenavCollapse
+        name="Code Editor"
+        icon={<Icon fontSize="small">receipt_long</Icon>}
+        active={collapseName === "ide"}
+      />
+    </NavLink>,
     // <NavLink key="sign-up" to="/authentication/sign-up">
     //   <SidenavCollapse
     //     name="Sign Up"

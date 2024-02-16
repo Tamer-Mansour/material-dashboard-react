@@ -49,10 +49,15 @@ import ProtectedRoute from "examples/ProtectedRoute";
 import Billing from "layouts/billing";
 import ChapterList from "layouts/chapters/ChapterList";
 import AddChapter from "layouts/chapters/AddChapter";
+import EditChapter from "layouts/chapters/EditChapter";
+import ReactMonaco from "layouts/codeEditor";
+import CreateCodeChallenges from "layouts/challenge/CreateCodeChallenges";
+import EditCodeChallenges from "layouts/challenge/EditCodeChallenges";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  // console.log("isLoggedIn " + isLoggedIn);
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const { pathname } = useLocation();
   const {
@@ -218,13 +223,58 @@ export default function App() {
         />
         <Route
           exact
+          path="chapter/:id/edit"
+          element={
+            <ProtectedRoute isAuthenticated={isLoggedIn}>
+              <EditChapter />
+            </ProtectedRoute>
+          }
+          key="edit chapter"
+        />
+        <Route
+          exact
           path="chapters/add"
           element={
             <ProtectedRoute isAuthenticated={isLoggedIn}>
               <AddChapter />
             </ProtectedRoute>
           }
-          key="tables"
+          key="add chapters"
+        />
+        <Route
+          exact
+          path="ide"
+          element={
+            <ProtectedRoute isAuthenticated={isLoggedIn}>
+              <ReactMonaco
+                theme="light"
+                editorHeight={"400px"}
+                custom_code={""}
+                isLoading={false}
+              />
+            </ProtectedRoute>
+          }
+          key="ide"
+        />
+        <Route
+          exact
+          path="/challenge/create"
+          element={
+            <ProtectedRoute isAuthenticated={isLoggedIn}>
+              <CreateCodeChallenges/>
+            </ProtectedRoute>
+          }
+          key="create code challenges"
+        />
+        <Route
+          exact
+          path="/challenge/:id/edit"
+          element={
+            <ProtectedRoute isAuthenticated={isLoggedIn}>
+              <EditCodeChallenges/>
+            </ProtectedRoute>
+          }
+          key="edit code challenges"
         />
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>

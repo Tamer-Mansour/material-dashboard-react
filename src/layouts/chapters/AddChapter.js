@@ -1,74 +1,86 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { TextField, Button, Typography, Grid } from "@mui/material";
+import {
+  Typography,
+  Grid,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Card,
+  TextField,
+} from "@mui/material";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import MDBox from "components/MDBox";
 import Footer from "examples/Footer";
+import { useNavigate } from "react-router-dom";
+import MDButton from "components/MDButton";
 
 function AddChapter() {
-  const [title, setTitle] = useState("");
+  const [newChapterTitle, setNewChapterTitle] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleChangeNewChapterTitle = (event) => {
+    setNewChapterTitle(event.target.value);
+    setError("");
+  };
 
+  const handleAddChapterSubmit = async () => {
     try {
-      const response = await axios.post("http://localhost:8000/api/content/chapters/add/", {
-        title: title,
+      await axios.post("http://localhost:8000/api/content/chapters/add/", {
+        title: newChapterTitle,
       });
-
-      // If request is successful, reset form fields and display success message
-      setTitle("");
-      setError("");
-      alert("Chapter added successfully!");
+      navigate("/chapters");
     } catch (error) {
-      // If request fails, display error message
-      console.error("Error adding chapter:", error.response.data);
-      setError(error.response.data.error);
+      if (error.response) {
+        setError(error.response.data.error);
+      } else if (error.request) {
+        setError("No response from the server");
+      } else {
+        setError(error.message);
+      }
     }
   };
 
   return (
-    // <div>
-    //
-    // </div>
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox py={3}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={3}>
+          <Grid item xs={12}>
             <Typography variant="h2">Add Chapter</Typography>
-            <form onSubmit={handleSubmit}>
-              <TextField
-                label="Title"
-                variant="outlined"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                fullWidth
-                margin="normal"
-              />
-              {error && (
-                <Typography variant="body1" style={{ color: "red" }}>
-                  {error}
-                </Typography>
-              )}
-              <Button type="submit" variant="contained" color="primary">
-                Add Chapter
-              </Button>
-            </form>
           </Grid>
-          <Grid item xs={12} md={6} lg={3}></Grid>
-          <Grid item xs={12} md={6} lg={3}></Grid>
-          <Grid item xs={12} md={6} lg={3}></Grid>
+          <Grid item xs={12} md={12}>
+            <Card sx={{ minHeight: "600px", maxHeight: "600px", overflowY: "auto", padding: 2 }}>
+              <MDBox pt={3} px={3}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="newChapterTitle"
+                      label="Chapter Title"
+                      type="text"
+                      fullWidth
+                      value={newChapterTitle}
+                      onChange={handleChangeNewChapterTitle}
+                      error={!!error}
+                      helperText={error}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <MDButton variant="gradient" color="info" onClick={handleAddChapterSubmit}>
+                      Add Chapter
+                    </MDButton>
+                  </Grid>
+                </Grid>
+              </MDBox>
+            </Card>
+          </Grid>
         </Grid>
-        <MDBox mt={4.5}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}></Grid>
-            <Grid item xs={12} md={6} lg={4}></Grid>
-            <Grid item xs={12} md={6} lg={4}></Grid>
-          </Grid>
-        </MDBox>
       </MDBox>
       <Footer />
     </DashboardLayout>
