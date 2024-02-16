@@ -112,6 +112,7 @@ const EditCodeChallenges = () => {
                     renderInput={(params) => <MDInput {...params} label="Chapter" />}
                     value={chapters.find((chapter) => chapter.id === chapterId)}
                     onChange={handleChapterChange}
+                    required 
                   />
                 </Card>
               </Grid>
@@ -123,6 +124,7 @@ const EditCodeChallenges = () => {
                     size="large"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    required 
                   />
                 </Card>
               </Grid>

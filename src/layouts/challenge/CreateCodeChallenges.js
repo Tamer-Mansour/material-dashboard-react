@@ -21,8 +21,53 @@ const CreateCodeChallenges = () => {
   const [functionSignature, setFunctionSignature] = useState("");
   const [testCases, setTestCases] = useState([]);
   const [chapters, setChapters] = useState([]);
+  const [chapterError, setChapterError] = useState("");
+  const [titleError, setTitleError] = useState("");
+  const [goalError, setGoalError] = useState(false);
+  const [descriptionError, setDescriptionError] = useState(false);
+  const [constrainsError, setConstrainsError] = useState(false);
 
   const handleSubmit = async () => {
+    let hasError = false;
+    if (!chapterId) {
+      setChapterError("Chapter is required");
+      hasError = true;
+    } else {
+      setChapterError("");
+    }
+
+    if (!title) {
+      setTitleError("Title is required");
+      hasError = true;
+    } else {
+      setTitleError("");
+    }
+
+    if (!goal) {
+      setGoalError(true);
+      hasError = true;
+    } else {
+      setGoalError(false);
+    }
+
+    if (!description) {
+      setDescriptionError(true);
+      hasError = true;
+    } else {
+      setDescriptionError(false);
+    }
+
+    if (!constrains) {
+      setConstrainsError(true);
+      hasError = true;
+    } else {
+      setConstrainsError(false);
+    }
+
+    if (hasError) {
+      return;
+    }
+
     try {
       await axios.post("http://localhost:8000/api/content/coding_challenges/add/", {
         chapter: chapterId,
@@ -61,6 +106,7 @@ const CreateCodeChallenges = () => {
   const handleChapterChange = (event, value) => {
     if (value) {
       setChapterId(value.id);
+      setChapterError(""); // Clear chapter error when a chapter is selected
     } else {
       setChapterId("");
     }
@@ -86,7 +132,13 @@ const CreateCodeChallenges = () => {
                     getOptionLabel={(option) => option.title}
                     renderInput={(params) => <MDInput {...params} label="Chapter" />}
                     onChange={handleChapterChange}
+                    required
                   />
+                  {chapterError && (
+                    <Typography variant="caption" color="error">
+                      {chapterError}
+                    </Typography>
+                  )}
                 </Card>
               </Grid>
               {/* code challenge title */}
@@ -97,6 +149,9 @@ const CreateCodeChallenges = () => {
                     size="large"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    required
+                    error={!!titleError}
+                    helperText={titleError}
                   />
                 </Card>
               </Grid>
@@ -108,6 +163,11 @@ const CreateCodeChallenges = () => {
                 >
                   <Typography variant="h6">Goal</Typography>
                   <MDEditor value={goal} onChange={setGoal} />
+                  {goalError && (
+                    <Typography variant="caption" color="error">
+                      Goal is required
+                    </Typography>
+                  )}
                 </Card>
               </Grid>
               {/* code challenge description */}
@@ -117,6 +177,11 @@ const CreateCodeChallenges = () => {
                 >
                   <Typography variant="h6">description</Typography>
                   <MDEditor value={description} onChange={setDescription} />
+                  {descriptionError && (
+                    <Typography variant="caption" color="error">
+                      Description is required
+                    </Typography>
+                  )}
                 </Card>
               </Grid>
               {/* constrains */}
@@ -126,6 +191,11 @@ const CreateCodeChallenges = () => {
                 >
                   <Typography variant="h6">constrains</Typography>
                   <MDEditor value={constrains} onChange={setConstrains} />
+                  {constrainsError && (
+                    <Typography variant="caption" color="error">
+                      Constraints are required
+                    </Typography>
+                  )}
                 </Card>
               </Grid>
             </Grid>
