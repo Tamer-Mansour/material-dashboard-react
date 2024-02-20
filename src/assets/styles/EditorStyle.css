@@ -1,0 +1,10 @@
+.overflow-guard{
+  border-radius: 0.75rem;
+}
+
+.monaco-editor, .monaco-editor-background {
+  border-radius: 0.75rem;
+}
+.lines-content{
+  border-radius: 0rem !important;
+}

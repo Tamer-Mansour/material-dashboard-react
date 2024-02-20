@@ -1,16 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {
-  Typography,
-  Grid,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Card,
-} from "@mui/material";
+import { Grid, Dialog, DialogTitle, DialogContent, DialogActions, Card } from "@mui/material";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import MDBox from "components/MDBox";
@@ -19,6 +10,7 @@ import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
+import MDSnackbar from "components/MDSnackbar";
 
 function EditChapter() {
   const { id } = useParams();
@@ -28,6 +20,10 @@ function EditChapter() {
   const [openConfirmDeleteDialog, setOpenConfirmDeleteDialog] = useState(false);
   const [openConfirmEditDialog, setOpenConfirmEditDialog] = useState(false);
   const navigate = useNavigate();
+  const [successSB, setSuccessSB] = useState(false);
+  const [errorSB, setErrorSB] = useState(false);
+  const [snackbarText, setSnackbarText] = useState("");
+  const [snackbarTimestamp, setSnackbarTimestamp] = useState("");
 
   useEffect(() => {
     const fetchChapter = async () => {
@@ -54,24 +50,48 @@ function EditChapter() {
       await axios.put(`http://localhost:8000/api/content/chapters/${id}/edit/`, {
         title: chapterTitle,
       });
-      navigate("/chapters");
+      setSuccessSB(true);
+      setSnackbarText("Chapter edited successfully");
+      setSnackbarTimestamp(new Date().toISOString());
+      setTimeout(() => {
+        navigate("/chapters");
+      }, 3000);
     } catch (error) {
+      setErrorSB(true);
+      setSnackbarText("Error editing chapter");
+      setSnackbarTimestamp(new Date().toISOString());
       console.error("Error editing chapter:", error);
     }
   };
 
   const handleDeleteChapter = async () => {
-    setOpenConfirmDeleteDialog(true);
+    // Check if there are any challenges in the chapter
+    if (challenges.length > 0) {
+      setErrorSB(true);
+      setSnackbarText("Cannot delete chapter with code challenges");
+      setSnackbarTimestamp(new Date().toISOString());
+    } else {
+      setOpenConfirmDeleteDialog(true);
+    }
   };
-  const handleEditChapter = async () => {
+
+  const handleEditChapterAction = async () => {
     setOpenConfirmEditDialog(true);
   };
 
   const handleConfirmDelete = async () => {
     try {
       await axios.delete(`http://localhost:8000/api/content/chapters/${id}/delete/`);
-      navigate("/chapters");
+      setSuccessSB(true);
+      setSnackbarText("Chapter deleted successfully");
+      setSnackbarTimestamp(new Date().toISOString());
+      setTimeout(() => {
+        navigate("/chapters");
+      }, 2000);
     } catch (error) {
+      setErrorSB(true);
+      setSnackbarText("Error deleting chapter");
+      setSnackbarTimestamp(new Date().toISOString());
       console.error("Error deleting chapter:", error);
     }
   };
@@ -79,6 +99,7 @@ function EditChapter() {
   const handleCloseDeleteConfirmDialog = () => {
     setOpenConfirmDeleteDialog(false);
   };
+
   const handleCloseEditConfirmDialog = () => {
     setOpenConfirmEditDialog(false);
   };
@@ -105,7 +126,7 @@ function EditChapter() {
                     />
                   </Grid>
                   <Grid item xs={2}>
-                    <MDButton variant="gradient" color="info" onClick={handleEditChapter}>
+                    <MDButton variant="gradient" color="info" onClick={handleEditChapterAction}>
                       Save
                     </MDButton>
                   </Grid>
@@ -129,7 +150,7 @@ function EditChapter() {
                   </Grid>
                   <Grid item xs={3}>
                     <MDButton variant="gradient" color="info" href="/challenge/create">
-                     Create Code Challenge
+                      Create Code Challenge
                     </MDButton>
                   </Grid>
                 </Grid>
@@ -202,6 +223,24 @@ function EditChapter() {
           </MDButton>
         </DialogActions>
       </Dialog>
+      {/* Snackbar */}
+      <MDSnackbar
+        color={successSB ? "success" : "error"}
+        icon={successSB ? "check" : "error"}
+        title="Message"
+        content={snackbarText}
+        dateTime={snackbarTimestamp}
+        open={successSB || errorSB}
+        onClose={() => {
+          setSuccessSB(false);
+          setErrorSB(false);
+        }}
+        close={() => {
+          setSuccessSB(false);
+          setErrorSB(false);
+        }}
+        bgWhite
+      />
     </DashboardLayout>
   );
 }

@@ -66,7 +66,7 @@ function Dashboard() {
                 count="2,300"
                 percentage={{
                   color: "success",
-                  amount: "+3%",
+                  amount: "+24%",
                   label: "than last month",
                 }}
               />
@@ -108,7 +108,7 @@ function Dashboard() {
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsBarChart
-                  color="info"
+                  color="primary"
                   title="website views"
                   description="Last Campaign Performance"
                   date="campaign sent 2 days ago"

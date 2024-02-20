@@ -5,11 +5,10 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import MDBox from "components/MDBox";
 import Footer from "examples/Footer";
-import ReactMonaco from "layouts/codeEditor";
-import Markdown from "examples/markdown";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import MDEditor from "@uiw/react-md-editor";
+import ReactMonaco from "layouts/codeEditor/ReactMonaco";
 
 const CreateCodeChallenges = () => {
   const [chapterId, setChapterId] = useState("");
@@ -227,9 +226,9 @@ const CreateCodeChallenges = () => {
                   <ReactMonaco
                     theme="light"
                     editorHeight={"400px"}
-                    custom_code={functionSignature} // Make sure the prop name matches the state variable
+                    custom_code={functionSignature}
                     isLoading={false}
-                    onChange={(value) => setFunctionSignature(value)} // Update the functionSignature state
+                    onChange={(value) => setFunctionSignature(value)}
                   />
                 </Card>
               </Grid>

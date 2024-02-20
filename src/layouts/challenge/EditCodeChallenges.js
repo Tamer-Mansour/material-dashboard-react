@@ -5,7 +5,6 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import MDBox from "components/MDBox";
 import Footer from "examples/Footer";
-import ReactMonaco from "layouts/codeEditor";
 import MDEditor from "@uiw/react-md-editor";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";

@@ -50,9 +50,13 @@ import Billing from "layouts/billing";
 import ChapterList from "layouts/chapters/ChapterList";
 import AddChapter from "layouts/chapters/AddChapter";
 import EditChapter from "layouts/chapters/EditChapter";
-import ReactMonaco from "layouts/codeEditor";
 import CreateCodeChallenges from "layouts/challenge/CreateCodeChallenges";
 import EditCodeChallenges from "layouts/challenge/EditCodeChallenges";
+// import AdminUsers from "layouts/users/AdminUsers";
+import Users from "layouts/users";
+import UserData from "layouts/users/UserData";
+import ReactMonaco from "layouts/codeEditor/ReactMonaco";
+import IDE from "layouts/codeEditor";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -246,12 +250,13 @@ export default function App() {
           path="ide"
           element={
             <ProtectedRoute isAuthenticated={isLoggedIn}>
-              <ReactMonaco
+              {/* <ReactMonaco
                 theme="light"
                 editorHeight={"400px"}
                 custom_code={""}
                 isLoading={false}
-              />
+              /> */}
+              <IDE/>
             </ProtectedRoute>
           }
           key="ide"
@@ -275,6 +280,26 @@ export default function App() {
             </ProtectedRoute>
           }
           key="edit code challenges"
+        />
+        <Route
+          exact
+          path="/users"
+          element={
+            <ProtectedRoute isAuthenticated={isLoggedIn}>
+              <Users/>
+            </ProtectedRoute>
+          }
+          key="users"
+        />
+        <Route
+          exact
+          path="/users/:id/edit-user"
+          element={
+            <ProtectedRoute isAuthenticated={isLoggedIn}>
+              <UserData/>
+            </ProtectedRoute>
+          }
+          key="edit-user"
         />
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>

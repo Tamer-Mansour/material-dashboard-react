@@ -133,13 +133,13 @@ function Sidenav({ color, brand, brandName, ...rest }) {
         active={collapseName === "ide"}
       />
     </NavLink>,
-    // <NavLink key="sign-up" to="/authentication/sign-up">
-    //   <SidenavCollapse
-    //     name="Sign Up"
-    //     icon={<Icon fontSize="small">assignment</Icon>}
-    //     active={collapseName === "sign-up"}
-    //   />
-    // </NavLink>,
+    <NavLink key="users" to="/users">
+      <SidenavCollapse
+        name="Users"
+        icon={<Icon fontSize="small">assignment</Icon>}
+        active={collapseName === "users"}
+      />
+    </NavLink>,
   ];
 
   return (
