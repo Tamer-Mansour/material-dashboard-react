@@ -40,13 +40,10 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 import Dashboard from "layouts/dashboard";
-import Tables from "layouts/tables";
-import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import ProtectedRoute from "examples/ProtectedRoute";
-import Billing from "layouts/billing";
 import ChapterList from "layouts/chapters/ChapterList";
 import AddChapter from "layouts/chapters/AddChapter";
 import EditChapter from "layouts/chapters/EditChapter";
@@ -55,8 +52,8 @@ import EditCodeChallenges from "layouts/challenge/EditCodeChallenges";
 // import AdminUsers from "layouts/users/AdminUsers";
 import Users from "layouts/users";
 import UserData from "layouts/users/UserData";
-import ReactMonaco from "layouts/codeEditor/ReactMonaco";
 import IDE from "layouts/codeEditor";
+import EditProfile from "layouts/profile/EditProfile";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -76,7 +73,6 @@ export default function App() {
   // TODO: synchronize login with local storage
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log("token: " + token);
     if (token) {
       setIsLoggedIn(true);
     }
@@ -185,39 +181,9 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        {/* <Route path="tables" element={<Tables />} /> */}
         <Route
-          path="notifications"
-          element={
-            <ProtectedRoute isAuthenticated={isLoggedIn}>
-              <Notifications />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          exact
-          path="tables"
-          element={
-            <ProtectedRoute isAuthenticated={isLoggedIn}>
-              <Tables />
-            </ProtectedRoute>
-          }
-          key="tables"
-        />
-        <Route
-          exact
-          path="billing"
-          element={
-            <ProtectedRoute isAuthenticated={isLoggedIn}>
-              <Billing />
-            </ProtectedRoute>
-          }
-          key="tables"
-        />
-        {/* ************* */}
-        <Route
-          exact
-          path="chapters"
+          // exact
+          path="/chapters"
           element={
             <ProtectedRoute isAuthenticated={isLoggedIn}>
               <ChapterList />
@@ -250,33 +216,27 @@ export default function App() {
           path="ide"
           element={
             <ProtectedRoute isAuthenticated={isLoggedIn}>
-              {/* <ReactMonaco
-                theme="light"
-                editorHeight={"400px"}
-                custom_code={""}
-                isLoading={false}
-              /> */}
-              <IDE/>
+              <IDE />
             </ProtectedRoute>
           }
           key="ide"
         />
         <Route
           exact
-          path="/challenge/create"
+          path="challenge/create"
           element={
             <ProtectedRoute isAuthenticated={isLoggedIn}>
-              <CreateCodeChallenges/>
+              <CreateCodeChallenges />
             </ProtectedRoute>
           }
-          key="create code challenges"
+          key="codeChalleges"
         />
         <Route
           exact
           path="/challenge/:id/edit"
           element={
             <ProtectedRoute isAuthenticated={isLoggedIn}>
-              <EditCodeChallenges/>
+              <EditCodeChallenges />
             </ProtectedRoute>
           }
           key="edit code challenges"
@@ -286,7 +246,7 @@ export default function App() {
           path="/users"
           element={
             <ProtectedRoute isAuthenticated={isLoggedIn}>
-              <Users/>
+              <Users />
             </ProtectedRoute>
           }
           key="users"
@@ -296,10 +256,20 @@ export default function App() {
           path="/users/:id/edit-user"
           element={
             <ProtectedRoute isAuthenticated={isLoggedIn}>
-              <UserData/>
+              <UserData />
             </ProtectedRoute>
           }
           key="edit-user"
+        />
+        <Route
+          exact
+          path="/profile/edit"
+          element={
+            <ProtectedRoute isAuthenticated={isLoggedIn}>
+              <EditProfile />
+            </ProtectedRoute>
+          }
+          key="edit-profile"
         />
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>

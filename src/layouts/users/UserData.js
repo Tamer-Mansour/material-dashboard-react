@@ -70,7 +70,7 @@ function UserData() {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Card
-                  sx={{ minHeight: "600px", maxHeight: "600px", overflowY: "auto", padding: 2 }}
+                  sx={{ minHeight: "650px", maxHeight: "600px", overflowY: "auto", padding: 2 }}
                 >
                   <Grid container spacing={3}>
                     {/* Other user details inputs */}

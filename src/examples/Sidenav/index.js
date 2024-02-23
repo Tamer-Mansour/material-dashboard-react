@@ -91,20 +91,6 @@ function Sidenav({ color, brand, brandName, ...rest }) {
         active={collapseName === "dashboard"}
       />
     </NavLink>,
-    <NavLink key="tables" to="/tables">
-      <SidenavCollapse
-        name="Tables"
-        icon={<Icon fontSize="small">table_view</Icon>}
-        active={collapseName === "tables"}
-      />
-    </NavLink>,
-    <NavLink key="notifications" to="/notifications">
-      <SidenavCollapse
-        name="Notifications"
-        icon={<Icon fontSize="small">notifications</Icon>}
-        active={collapseName === "notifications"}
-      />
-    </NavLink>,
     <NavLink key="profile" to="/profile">
       <SidenavCollapse
         name="Profile"
@@ -112,16 +98,9 @@ function Sidenav({ color, brand, brandName, ...rest }) {
         active={collapseName === "profile"}
       />
     </NavLink>,
-    <NavLink key="billing" to="/billing">
-      <SidenavCollapse
-        name="billing"
-        icon={<Icon fontSize="small">receipt_long</Icon>}
-        active={collapseName === "billing"}
-      />
-    </NavLink>,
     <NavLink key="chapters" to="/chapters">
       <SidenavCollapse
-        name="Chapters"
+        name="Content"
         icon={<Icon fontSize="small">receipt_long</Icon>}
         active={collapseName === "chapters"}
       />

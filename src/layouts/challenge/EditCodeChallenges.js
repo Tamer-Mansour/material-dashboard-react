@@ -13,7 +13,6 @@ import { Editor } from "@monaco-editor/react";
 
 const EditCodeChallenges = () => {
   const { id } = useParams();
-  console.log("id   " + id);
   const [chapterId, setChapterId] = useState("");
   const [title, setTitle] = useState("");
   const [goal, setGoal] = useState("");
@@ -89,7 +88,7 @@ const EditCodeChallenges = () => {
       setChapterId("");
     }
   };
-
+  
   return (
     <DashboardLayout>
       <DashboardNavbar />

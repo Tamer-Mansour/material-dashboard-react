@@ -110,7 +110,7 @@ function EditChapter() {
       <MDBox py={3}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
-            <Card sx={{ minHeight: "600px", maxHeight: "600px", overflowY: "auto", padding: 2 }}>
+            <Card sx={{ minHeight: "700px", maxHeight: "700px", overflowY: "auto", padding: 2 }}>
               <MDBox pt={3} px={3}>
                 <Grid container spacing={3}>
                   <Grid item xs={12}>
@@ -140,7 +140,7 @@ function EditChapter() {
             </Card>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Card sx={{ minHeight: "600px", maxHeight: "600px", overflowY: "auto", padding: 2 }}>
+            <Card sx={{ minHeight: "700px", maxHeight: "700px", overflowY: "auto", padding: 2 }}>
               <MDBox pt={3} px={3}>
                 <Grid container spacing={3}>
                   <Grid item xs={9}>

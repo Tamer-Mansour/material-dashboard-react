@@ -13,36 +13,53 @@ import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
-import axios from "axios";
+// import axios from "axios";
+import axios from "../../../axiosConfig";
+import axiosInstance from "../../../axiosConfig";
 
 function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const validateFields = () => {
+    const errors = {};
+    if (!email.trim()) {
+      errors.email = "Email is required";
+    }
+    if (!password.trim()) {
+      errors.password = "Password is required";
+    }
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateFields()) {
+      return;
+    }
 
     try {
-      const response = await axios.post("http://localhost:8000/api/auth/login/", {
+      const response = await axiosInstance.post("http://localhost:8000/api/auth/login/", {
         email,
         password,
       });
 
-      const token = response.data.token;
-      localStorage.setItem("token", token);
-      // Set the state to indicate the user is logged in
-      // window.location.reload();
-      setIsLoggedIn(true);
+      const { token, user_role } = response.data;
 
-      // setTimeout(() => {
+      if (user_role === "student") {
+        setErrors({ general: "Students are not allowed to log in" });
+        return;
+      } else {
+        localStorage.setItem("token", token);
         window.location.href = "/dashboard";
-      // }, 5000);
+      }
     } catch (error) {
-      console.error("Login failed:", error);
+      setErrors({ general: "Login failed. Please check your credentials." });
     }
   };
 
@@ -90,6 +107,7 @@ function Basic() {
                 fullWidth
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                error={errors.email}
               />
             </MDBox>
             <MDBox mb={2}>
@@ -99,7 +117,11 @@ function Basic() {
                 fullWidth
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                error={errors.password}
               />
+              <MDTypography variant="h6" color="error">
+                {errors.general}
+              </MDTypography>
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
               <Switch checked={rememberMe} onChange={handleSetRememberMe} />

@@ -9,6 +9,7 @@ import DataTable from "examples/Tables/DataTable"; // Import the DataTable compo
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 import { useNavigate } from "react-router-dom";
+import MDAvatar from "components/MDAvatar";
 
 function Users() {
   const [users, setUsers] = useState([]);
@@ -68,6 +69,7 @@ function Users() {
             <DataTable
               table={{
                 columns: [
+                  { Header: "Avatar", accessor: "avatar" },
                   { Header: "Username", accessor: "username" },
                   { Header: "First Name", accessor: "first_name" },
                   { Header: "Last Name", accessor: "last_name" },
@@ -78,6 +80,11 @@ function Users() {
                   { Header: "Actions", accessor: "actions" },
                 ],
                 rows: users.map((user) => ({
+                  avatar:(
+                    <>
+                    <MDAvatar src={`http://localhost:8000${user?.avatar}`} alt="user-image" size="xl" shadow="sm" />
+                    </>
+                  ),
                   first_name: user.first_name,
                   last_name: user.last_name,
                   username: user.username,
