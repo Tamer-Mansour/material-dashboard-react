@@ -34,8 +34,7 @@ const Courses = () => {
     fetchData();
   }, []);
 
-  console.log("courses", courses);
-  const handleAddUser = () => {
+  const handleAddCourse = () => {
     navigate("/courses/create");
   };
   return (
@@ -44,7 +43,7 @@ const Courses = () => {
       <MDBox py={3}>
         <Grid container spacing={3}>
           <Grid item xs={10}>
-          <MDButton variant="gradient" color="info" onClick={handleAddUser}>
+            <MDButton variant="gradient" color="info" onClick={handleAddCourse}>
               Add User
             </MDButton>
           </Grid>

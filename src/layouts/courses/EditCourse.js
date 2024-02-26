@@ -9,10 +9,10 @@ import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import MDEditor from "@uiw/react-md-editor";
 import ReactMonaco from "layouts/codeEditor/ReactMonaco";
+import { useParams } from "react-router-dom";
 
-const EditCourse = ({ match }) => {
-  const courseId = match.params.id;
-
+const EditCourse = () => {
+  const {id} = useParams();
   const [course, setCourse] = useState({
     title: "",
     chapter: "",
@@ -24,12 +24,11 @@ const EditCourse = ({ match }) => {
   const [chapters, setChapters] = useState([]);
   const [chapterError, setChapterError] = useState("");
   const [titleError, setTitleError] = useState("");
-  // Add errors for other fields as needed
 
   useEffect(() => {
     const fetchCourseData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/content/courses/${courseId}/`);
+        const response = await axios.get(`http://localhost:8000/api/content/courses/get_course_by_id/${id}/`);
         const courseData = response.data;
         setCourse({
           title: courseData.title,
@@ -54,12 +53,12 @@ const EditCourse = ({ match }) => {
 
     fetchCourseData();
     fetchChapters();
-  }, [courseId]);
+  }, [id]);
 
   const handleChapterChange = (event, value) => {
     if (value) {
       setCourse({ ...course, chapter: value.id });
-      setChapterError(""); // Clear chapter error when a chapter is selected
+      setChapterError(""); 
     } else {
       setCourse({ ...course, chapter: "" });
     }
@@ -82,7 +81,7 @@ const EditCourse = ({ match }) => {
     }
 
     try {
-      await axios.put(`http://localhost:8000/api/content/courses/${courseId}/`, course);
+      await axios.put(`http://localhost:8000/api/content/courses/update_course/${id}/`, course);
       // Handle success, e.g., redirect to a new page or show a success message
     } catch (error) {
       console.error("Error updating course:", error);

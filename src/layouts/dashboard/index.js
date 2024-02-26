@@ -34,10 +34,93 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
+  const [users, setUsers] = useState([]);
+  const [increaseThisWeek, setIncreaseThisWeek] = useState(false);
+  const [lastWeekUsers, setLastWeekUsers] = useState([]);
+  console.log("lastWeekUsers  "+ lastWeekUsers.created_at);
 
+  const [challenges, setChallenges] = useState([]);
+  const [increaseChallengesThisWeek, setIncreaseChallengesThisWeek] = useState(false);
+  const [lastWeekChallenges, setLastWeekChallenges] = useState([]);
+
+  useEffect(() => {
+    // Fetch code challenges data from the API
+    axios
+      .get("http://localhost:8000/api/content/coding_challenges/")
+      .then((response) => {
+        setChallenges(response.data);
+
+        // Calculate the challenges created in the last 7 days
+        const now = new Date();
+        const thisWeekChallenges = response.data.filter((challenge) => {
+          const challengeCreatedAt = new Date(challenge.created_at);
+          const daysDiff = Math.floor((now - challengeCreatedAt) / (1000 * 60 * 60 * 24));
+          return daysDiff <= 7;
+        });
+
+        setIncreaseChallengesThisWeek(thisWeekChallenges.length > 0);
+
+        // Calculate the challenges created in the last week
+        const lastWeekStartDate = new Date();
+        lastWeekStartDate.setDate(lastWeekStartDate.getDate() - 7);
+        const lastWeekChallenges = response.data.filter((challenge) => {
+          const challengeCreatedAt = new Date(challenge.created_at);
+          return challengeCreatedAt >= lastWeekStartDate && challengeCreatedAt < now;
+        });
+
+        setLastWeekChallenges(lastWeekChallenges);
+      })
+      .catch((error) => {
+        console.error("Error fetching code challenges:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    // Fetch users data from the API
+    axios
+      .get("http://localhost:8000/api/auth/get_users/")
+      .then((response) => {
+        setUsers(response.data);
+
+        // Calculate the users created in the last 7 days
+        const now = new Date();
+        const thisWeekUsers = response.data.filter((user) => {
+          const userCreatedAt = new Date(user.created_at);
+          const daysDiff = Math.floor((now - userCreatedAt) / (1000 * 60 * 60 * 24));
+          return daysDiff <= 7;
+        });
+
+        setIncreaseThisWeek(thisWeekUsers.length > 0);
+
+        // Calculate the users created in the last week
+        const lastWeekStartDate = new Date();
+        lastWeekStartDate.setDate(lastWeekStartDate.getDate() - 7);
+        const lastWeekUsers = response.data.filter((user) => {
+          
+          const userCreatedAt = new Date(user.created_at);
+          return userCreatedAt >= lastWeekStartDate && userCreatedAt < now;
+        });
+
+        setLastWeekUsers(lastWeekUsers);
+      })
+      .catch((error) => {
+        console.error("Error fetching users:", error);
+      });
+  }, []);
+
+  // Calculate the percentage change
+  const percentageChange = lastWeekUsers.length
+    ? ((users.length - lastWeekUsers.length) / lastWeekUsers.length) * 100
+    : 0;
+
+  const percentageChangeChallenges = lastWeekChallenges.length
+    ? ((challenges.length - lastWeekChallenges.length) / lastWeekChallenges.length) * 100
+    : 0;
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -46,14 +129,15 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                color="dark"
-                icon="weekend"
-                title="Bookings"
-                count={281}
+                icon="leaderboard"
+                title="Total Users"
+                count={users.length}
                 percentage={{
-                  color: "success",
-                  amount: "+55%",
-                  label: "than lask week",
+                  color: increaseThisWeek ? "success" : "error",
+                  amount: increaseThisWeek
+                    ? `+${percentageChange.toFixed(2)}%`
+                    : `-${percentageChange.toFixed(2)}%`,
+                  label: increaseThisWeek ? "than last week" : "this week",
                 }}
               />
             </MDBox>
@@ -61,13 +145,16 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                icon="leaderboard"
-                title="Today's Users"
-                count="2,300"
+                icon="code"
+                title="Code Challenges"
+                count={challenges.length}
+                // Customize the percentage as needed
                 percentage={{
-                  color: "success",
-                  amount: "+24%",
-                  label: "than last month",
+                  color: increaseChallengesThisWeek ? "info" : "error",
+                  amount: increaseChallengesThisWeek
+                    ? `+${percentageChangeChallenges.toFixed(2)}%`
+                    : `-${percentageChangeChallenges.toFixed(2)}%`,
+                  label: increaseChallengesThisWeek ? "than last week" : "this week",
                 }}
               />
             </MDBox>

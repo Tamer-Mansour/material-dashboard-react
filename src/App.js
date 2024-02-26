@@ -57,6 +57,7 @@ import EditProfile from "layouts/profile/EditProfile";
 import CreateUser from "layouts/users/CreateUser";
 import Courses from "layouts/courses";
 import CreateCourse from "layouts/courses/CreateCourse";
+import EditCourse from "layouts/courses/EditCourse";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -308,6 +309,16 @@ export default function App() {
           element={
             <ProtectedRoute isAuthenticated={isLoggedIn}>
               <CreateUser />
+            </ProtectedRoute>
+          }
+          key="create-user"
+        />
+        <Route
+          exact
+          path="/course/:id/edit"
+          element={
+            <ProtectedRoute isAuthenticated={isLoggedIn}>
+              <EditCourse />
             </ProtectedRoute>
           }
           key="create-user"
