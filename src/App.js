@@ -54,6 +54,9 @@ import Users from "layouts/users";
 import UserData from "layouts/users/UserData";
 import IDE from "layouts/codeEditor";
 import EditProfile from "layouts/profile/EditProfile";
+import CreateUser from "layouts/users/CreateUser";
+import Courses from "layouts/courses";
+import CreateCourse from "layouts/courses/CreateCourse";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -172,7 +175,15 @@ export default function App() {
 
         {getRoutes(routes)}
 
-        <Route path="profile" element={<Profile />} />
+        {/* <Route path="profile" element={<Profile />} /> */}
+        <Route
+          path="profile"
+          element={
+            <ProtectedRoute isAuthenticated={isLoggedIn}>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="dashboard"
           element={
@@ -271,6 +282,37 @@ export default function App() {
           }
           key="edit-profile"
         />
+        <Route
+          exact
+          path="/courses"
+          element={
+            <ProtectedRoute isAuthenticated={isLoggedIn}>
+              <Courses />
+            </ProtectedRoute>
+          }
+          key="courses"
+        />
+        <Route
+          exact
+          path="/courses/create"
+          element={
+            <ProtectedRoute isAuthenticated={isLoggedIn}>
+              <CreateCourse />
+            </ProtectedRoute>
+          }
+          key="create-course"
+        />
+        <Route
+          exact
+          path="/create-user"
+          element={
+            <ProtectedRoute isAuthenticated={isLoggedIn}>
+              <CreateUser />
+            </ProtectedRoute>
+          }
+          key="create-user"
+        />
+
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </ThemeProvider>

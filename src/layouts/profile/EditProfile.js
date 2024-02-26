@@ -81,7 +81,7 @@ const EditProfile = () => {
       }
 
       await axios.put(`http://localhost:8000/api/auth/user/update/${userData.id}/`, formData);
-      navigate("/dashboard");
+      navigate("/profile");
     } catch (error) {
       console.error("Error updating user data:", error);
     }
@@ -96,13 +96,13 @@ const EditProfile = () => {
       <MDBox py={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <MDTypography variant="h2">edit profile page</MDTypography>
+            <MDTypography variant="h2">Edit {userData?.first_name}'s  profile</MDTypography>
           </Grid>
           <Grid item xs={12} md={12}>
-            <Card sx={{ minHeight: "600px", maxHeight: "600px", overflowY: "auto", padding: 2 }}>
+            <Card sx={{ minHeight: "650px", maxHeight: "650px", overflowY: "auto", padding: 2 }}>
               <MDBox pt={3} px={3}>
                 <Grid container spacing={3}>
-                  <Grid item xs={12}>
+                  <Grid item xs={4}>
                     <TextField
                       autoFocus
                       margin="dense"
@@ -112,9 +112,10 @@ const EditProfile = () => {
                       fullWidth
                       value={userData.username}
                       onChange={(e) => handleInputChange(e, "username")}
+                      disabled
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={4}>
                     <TextField
                       margin="dense"
                       id="first_name"
@@ -125,7 +126,7 @@ const EditProfile = () => {
                       onChange={(e) => handleInputChange(e, "first_name")}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={4}>
                     <TextField
                       margin="dense"
                       id="last_name"
@@ -136,7 +137,7 @@ const EditProfile = () => {
                       onChange={(e) => handleInputChange(e, "last_name")}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={6}>
                     <TextField
                       margin="dense"
                       id="email"
@@ -145,9 +146,10 @@ const EditProfile = () => {
                       fullWidth
                       value={userData.email}
                       onChange={(e) => handleInputChange(e, "email")}
+                      disabled
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={6}>
                     <TextField
                       margin="dense"
                       id="date_of_birth"
@@ -170,24 +172,27 @@ const EditProfile = () => {
                       onChange={(e) => handleInputChange(e, "description")}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={4}>
                     <img
                       src={`http://localhost:8000${userData?.avatar}`}
                       alt="Avatar"
                       style={{ width: "100px", height: "100px", borderRadius: "50%" }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={4}>
                     <TextField
                       margin="dense"
                       id="avatar"
                       label="Avatar"
                       type="file"
                       fullWidth
+                      inputProps={{
+                        multiple: true
+                      }}
                       onChange={(e) => handleFileChange(e, "avatar")}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={4}>
                     <TextField
                       margin="dense"
                       id="location"
@@ -198,18 +203,18 @@ const EditProfile = () => {
                       onChange={(e) => handleInputChange(e, "location")}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={6}>
                     <TextField
                       margin="dense"
                       id="social_media_url"
-                      label="Social Media URL"
+                      label="LinkedIn Account"
                       type="text"
                       fullWidth
                       value={userData.social_media_url}
                       onChange={(e) => handleInputChange(e, "social_media_url")}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={6}>
                     <TextField
                       margin="dense"
                       id="mobile"

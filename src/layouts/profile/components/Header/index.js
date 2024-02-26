@@ -94,11 +94,6 @@ function Header({ userData, children }) {
       >
         <Grid container spacing={3} alignItems="center">
           <Grid item>
-          {/* <img
-                src={`http://localhost:8000${userData?.avatar}`}
-                alt="User Avatar"
-                style={{ width: 100, height: 100, borderRadius: "50%" }}
-              /> */}
             <MDAvatar src={`http://localhost:8000${userData?.avatar}`} alt="profile-image" size="xl" shadow="sm" />
           </Grid>
           <Grid item>

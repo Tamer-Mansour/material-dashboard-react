@@ -37,7 +37,7 @@ function Users() {
 
   const handleAddUser = () => {
     // Navigate to the add user page
-    navigate("/add-user");
+    navigate("/create-user");
   };
 
   const handleDeleteUser = async (userId) => {

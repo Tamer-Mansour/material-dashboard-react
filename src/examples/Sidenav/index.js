@@ -105,6 +105,13 @@ function Sidenav({ color, brand, brandName, ...rest }) {
         active={collapseName === "chapters"}
       />
     </NavLink>,
+    <NavLink key="courses" to="/courses">
+    <SidenavCollapse
+      name="Courses"
+      icon={<Icon fontSize="small">receipt_long</Icon>}
+      active={collapseName === "courses"}
+    />
+  </NavLink>,
     <NavLink key="ide" to="/ide">
       <SidenavCollapse
         name="Code Editor"

@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Card, Grid, Typography } from "@mui/material";
+import {
+  Card,
+  Grid,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+} from "@mui/material";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import MDBox from "components/MDBox";
@@ -10,10 +19,10 @@ import MDSnackbar from "components/MDSnackbar";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import Autocomplete from "@mui/material/Autocomplete";
+import { useUserQuery } from "custom_hooks/AuthQuery/useUsersQuery";
 
 function UserData() {
   const { id } = useParams();
-  console.log("userId " + id);
   const history = useNavigate();
   const [user, setUser] = useState(null);
   const [successSB, setSuccessSB] = useState(false);
@@ -21,7 +30,9 @@ function UserData() {
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarTimestamp, setSnackbarTimestamp] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const roles = ["student", "admin", "instructor"];
+  const { userData, loading, dataFetched } = useUserQuery();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -42,6 +53,10 @@ function UserData() {
   };
 
   const handleDeleteUser = async () => {
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDeleteUser = async () => {
     try {
       await axios.delete(`http://localhost:8000/api/auth/user/delete/${id}/`);
       setSuccessSB(true);
@@ -55,7 +70,13 @@ function UserData() {
       setSnackbarText("Error deleting user");
       setSnackbarTimestamp(new Date().toISOString());
       console.error("Error deleting user:", error);
+    } finally {
+      setDeleteDialogOpen(false);
     }
+  };
+
+  const cancelDeleteUser = () => {
+    setDeleteDialogOpen(false);
   };
 
   return (
@@ -76,43 +97,19 @@ function UserData() {
                     {/* Other user details inputs */}
                     <Grid item xs={12}>
                       <Typography variant="h6">username</Typography>
-                      <MDInput
-                        // label="Username"
-                        value={user?.username}
-                        type="text"
-                        fullWidth
-                        disabled
-                      />
+                      <MDInput value={user?.username} type="text" fullWidth disabled />
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <Typography variant="h6">First name</Typography>
-                      <MDInput
-                        // label="First Name"
-                        value={user?.first_name}
-                        type="text"
-                        fullWidth
-                        disabled
-                      />
+                      <MDInput value={user?.first_name} type="text" fullWidth disabled />
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <Typography variant="h6">Last name</Typography>
-                      <MDInput
-                        // label="Last Name"
-                        value={user?.last_name}
-                        type="text"
-                        fullWidth
-                        disabled
-                      />
+                      <MDInput value={user?.last_name} type="text" fullWidth disabled />
                     </Grid>
                     <Grid item xs={12}>
                       <Typography variant="h6">Email</Typography>
-                      <MDInput
-                        //   label="Email"
-                        value={user?.email}
-                        type="text"
-                        fullWidth
-                        disabled
-                      />
+                      <MDInput value={user?.email} type="text" fullWidth disabled />
                     </Grid>
                     <Grid item xs={12}>
                       <Typography variant="h6">Role</Typography>
@@ -138,6 +135,26 @@ function UserData() {
                           <MDButton variant="gradient" color="error" onClick={handleDeleteUser}>
                             Delete User
                           </MDButton>
+                          <Dialog open={deleteDialogOpen} onClose={cancelDeleteUser}>
+                            <DialogTitle>Confirm Delete</DialogTitle>
+                            <DialogContent>
+                              <Typography variant="body1">
+                                Are you sure you want to delete this account?
+                              </Typography>
+                            </DialogContent>
+                            <DialogActions>
+                              <MDButton onClick={cancelDeleteUser} variant="gradient" color="info">
+                                Cancel
+                              </MDButton>
+                              <MDButton
+                                onClick={confirmDeleteUser}
+                                variant="gradient"
+                                color="error"
+                              >
+                                Delete
+                              </MDButton>
+                            </DialogActions>
+                          </Dialog>
                         </Grid>
                       </Grid>
                     </Grid>

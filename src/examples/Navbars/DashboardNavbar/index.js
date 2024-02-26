@@ -52,8 +52,12 @@ import {
   setMiniSidenav,
   setOpenConfigurator,
 } from "context";
+import { useUserQuery } from "custom_hooks/AuthQuery/useUsersQuery";
+import MDAvatar from "components/MDAvatar";
 
 function DashboardNavbar({ absolute, light, isMini }) {
+  const { userData, loading, dataFetched } = useUserQuery();
+
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
@@ -142,11 +146,6 @@ function DashboardNavbar({ absolute, light, isMini }) {
               <MDInput label="Search here" />
             </MDBox> */}
             <MDBox color={light ? "white" : "inherit"}>
-              <Link to="/profile">
-                <IconButton sx={navbarIconButton} size="small" disableRipple>
-                  <Icon sx={iconsStyle}>account_circle</Icon>
-                </IconButton>
-              </Link>
               <IconButton
                 size="small"
                 disableRipple
@@ -188,6 +187,17 @@ function DashboardNavbar({ absolute, light, isMini }) {
               >
                 <Icon sx={iconsStyle}>logout</Icon>
               </IconButton>
+              <Link to="/profile">
+                <IconButton sx={navbarIconButton} size="small" disableRipple>
+                  {/* <Icon sx={iconsStyle}>account_circle</Icon> */}
+                  <MDAvatar
+                    src={`http://localhost:8000${userData?.avatar}`}
+                    alt="user-image"
+                    size="sm"
+                    shadow="sm"
+                  />
+                </IconButton>
+              </Link>
               {renderMenu()}
             </MDBox>
           </MDBox>
