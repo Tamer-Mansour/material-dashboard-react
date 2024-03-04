@@ -12,6 +12,7 @@ import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
 import MDSnackbar from "components/MDSnackbar";
 import MDEditor from "@uiw/react-md-editor";
+import MarkdownViewer from "@uiw/react-md-editor";
 
 function EditChapter() {
   const { id } = useParams();
@@ -131,11 +132,12 @@ function EditChapter() {
                   <Grid item xs={12}>
                     <MDTypography variant="h5">Chapter Description</MDTypography>
                     <MDEditor
-                      height="400px"
+                      height="350px"
                       data-color-mode="light"
                       value={chapterDescription}
                       onChange={setChapterDescription}
                     />
+                    {/* <MarkdownViewer value={chapterDescription} data-color-mode="light" /> */}
                   </Grid>
                   <Grid item xs={2}>
                     <MDButton variant="gradient" color="info" onClick={handleEditChapterAction}>
