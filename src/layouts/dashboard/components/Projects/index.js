@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -30,72 +30,83 @@ import DataTable from "examples/Tables/DataTable";
 
 // Data
 import data from "layouts/dashboard/components/Projects/data";
+import axios from "axios";
+import MDButton from "components/MDButton";
+import { Grid } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import MDAvatar from "components/MDAvatar";
 
 function Projects() {
-  const { columns, rows } = data();
-  const [menu, setMenu] = useState(null);
+  const [users, setUsers] = useState([]);
+  const navigate = useNavigate();
 
-  const openMenu = ({ currentTarget }) => setMenu(currentTarget);
-  const closeMenu = () => setMenu(null);
+  useEffect(() => {
+    // Fetch users data when the component mounts
+    const fetchUsersByRole = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/auth/get_users_by_role/instructor/");
+        setUsers(response.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
 
-  const renderMenu = (
-    <Menu
-      id="simple-menu"
-      anchorEl={menu}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "left",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={Boolean(menu)}
-      onClose={closeMenu}
-    >
-      <MenuItem onClick={closeMenu}>Action</MenuItem>
-      <MenuItem onClick={closeMenu}>Another action</MenuItem>
-      <MenuItem onClick={closeMenu}>Something else</MenuItem>
-    </Menu>
-  );
+    fetchUsersByRole();
+  }, []);
+
+  const handleEditUser = (userId) => {
+    navigate(`/users/${userId}/edit-user`);
+  };
 
   return (
-    <Card>
-      <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-        <MDBox>
-          <MDTypography variant="h6" gutterBottom>
-            Projects
-          </MDTypography>
-          <MDBox display="flex" alignItems="center" lineHeight={0}>
-            <Icon
-              sx={{
-                fontWeight: "bold",
-                color: ({ palette: { info } }) => info.main,
-                mt: -0.5,
+    <Card sx={{ minHeight: "550px", maxHeight: "650px", overflowY: "auto", padding: 2 }}>
+      <MDBox pt={3} px={3}>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <MDTypography> Instructors </MDTypography>
+            <DataTable
+              table={{
+                columns: [
+                  { Header: "Avatar", accessor: "avatar" },
+                  { Header: "Username", accessor: "username" },
+                  { Header: "First Name", accessor: "first_name" },
+                  { Header: "Last Name", accessor: "last_name" },
+                  { Header: "Actions", accessor: "actions" },
+                ],
+                rows: users.map((user) => ({
+                  avatar: (
+                    <>
+                      <MDAvatar
+                        src={`http://localhost:8000${user?.avatar}`}
+                        alt="user-image"
+                        size="sm"
+                        shadow="sm"
+                      />
+                    </>
+                  ),
+                  username: user.username,
+                  first_name: user.first_name,
+                  last_name: user.last_name,
+                  actions: (
+                    <MDButton
+                      variant="caption"
+                      color="text"
+                      onClick={() => handleEditUser(user.id)}
+                    >
+                      View
+                    </MDButton>
+                  ),
+                })),
               }}
-            >
-              done
-            </Icon>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>30 done</strong> this month
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-        <MDBox color="text" px={2}>
-          <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
-            more_vert
-          </Icon>
-        </MDBox>
-        {renderMenu}
-      </MDBox>
-      <MDBox>
-        <DataTable
-          table={{ columns, rows }}
-          showTotalEntries={false}
-          isSorted={false}
-          noEndBorder
-          entriesPerPage={false}
-        />
+              canSearch={true}
+              pagination={{ variant: "contained", color: "info" }}
+              entriesPerPage={{ defaultValue: 5, entries: [5, 10, 15, 20, 25] }}
+              showTotalEntries={true}
+              isSorted={true}
+              noEndBorder={false}
+            />
+          </Grid>
+        </Grid>
       </MDBox>
     </Card>
   );

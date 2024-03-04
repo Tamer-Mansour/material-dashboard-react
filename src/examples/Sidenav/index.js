@@ -38,6 +38,10 @@ import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
 // Custom styles for the Sidenav
 import SidenavRoot from "examples/Sidenav/SidenavRoot";
 import sidenavLogoLabel from "examples/Sidenav/styles/sidenav";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import DataObjectIcon from "@mui/icons-material/DataObject";
+import CastForEducationIcon from "@mui/icons-material/CastForEducation";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 
 // Material Dashboard 2 React context
 import {
@@ -101,30 +105,26 @@ function Sidenav({ color, brand, brandName, ...rest }) {
     <NavLink key="chapters" to="/chapters">
       <SidenavCollapse
         name="Content"
-        icon={<Icon fontSize="small">receipt_long</Icon>}
+        icon={<AssignmentTurnedInIcon />}
         active={collapseName === "chapters"}
       />
     </NavLink>,
-    <NavLink key="courses" to="/courses">
-    <SidenavCollapse
-      name="Courses"
-      icon={<Icon fontSize="small">receipt_long</Icon>}
-      active={collapseName === "courses"}
-    />
-  </NavLink>,
+    // <NavLink key="courses" to="/courses">
+    //   <SidenavCollapse
+    //     name="Courses"
+    //     icon={<CastForEducationIcon />}
+    //     active={collapseName === "courses"}
+    //   />
+    // </NavLink>,
     <NavLink key="ide" to="/ide">
       <SidenavCollapse
         name="Code Editor"
-        icon={<Icon fontSize="small">receipt_long</Icon>}
+        icon={<DataObjectIcon />}
         active={collapseName === "ide"}
       />
     </NavLink>,
     <NavLink key="users" to="/users">
-      <SidenavCollapse
-        name="Users"
-        icon={<Icon fontSize="small">assignment</Icon>}
-        active={collapseName === "users"}
-      />
+      <SidenavCollapse name="Users" icon={<PeopleAltIcon />} active={collapseName === "users"} />
     </NavLink>,
   ];
 

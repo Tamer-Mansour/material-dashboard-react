@@ -9,6 +9,7 @@ import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import MDEditor from "@uiw/react-md-editor";
 import ReactMonaco from "layouts/codeEditor/ReactMonaco";
+import { useNavigate } from "react-router-dom";
 
 const CreateCodeChallenges = () => {
   const [chapterId, setChapterId] = useState("");
@@ -25,6 +26,7 @@ const CreateCodeChallenges = () => {
   const [goalError, setGoalError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
   const [constrainsError, setConstrainsError] = useState(false);
+  let navigate = useNavigate();
 
   const handleSubmit = async () => {
     let hasError = false;
@@ -78,6 +80,7 @@ const CreateCodeChallenges = () => {
         code,
         testcases: testCases,
       });
+      navigate("/chapters");
       // Handle success, e.g., redirect to a new page or show a success message
     } catch (error) {
       if (error.response && error.response.data && error.response.data.error) {
@@ -161,7 +164,7 @@ const CreateCodeChallenges = () => {
                   sx={{ minHeight: "200px", maxHeight: "600px", overflowY: "auto", padding: 2 }}
                 >
                   <Typography variant="h6">Goal</Typography>
-                  <MDEditor value={goal} onChange={setGoal} />
+                  <MDEditor data-color-mode="light" value={goal} onChange={setGoal} />
                   {goalError && (
                     <Typography variant="caption" color="error">
                       Goal is required
@@ -175,7 +178,7 @@ const CreateCodeChallenges = () => {
                   sx={{ minHeight: "200px", maxHeight: "600px", overflowY: "auto", padding: 2 }}
                 >
                   <Typography variant="h6">description</Typography>
-                  <MDEditor value={description} onChange={setDescription} />
+                  <MDEditor data-color-mode="light" value={description} onChange={setDescription} />
                   {descriptionError && (
                     <Typography variant="caption" color="error">
                       Description is required
@@ -189,7 +192,7 @@ const CreateCodeChallenges = () => {
                   sx={{ minHeight: "200px", maxHeight: "600px", overflowY: "auto", padding: 2 }}
                 >
                   <Typography variant="h6">constrains</Typography>
-                  <MDEditor value={constrains} onChange={setConstrains} />
+                  <MDEditor data-color-mode="light" value={constrains} onChange={setConstrains} />
                   {constrainsError && (
                     <Typography variant="caption" color="error">
                       Constraints are required

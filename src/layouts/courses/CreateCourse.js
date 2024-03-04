@@ -82,10 +82,10 @@ const CreateCourse = () => {
           <Grid item xs={12}>
             <Typography variant="h3">Create Course</Typography>
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={12}>
             <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Card sx={{ minHeight: "50px", maxHeight: "600px", overflowY: "auto", padding: 2 }}>
+              <Grid item xs={6}>
+                <Card sx={{ minHeight: "90px", maxHeight: "600px", overflowY: "auto", padding: 2 }}>
                   <Autocomplete
                     label="Select Chapter"
                     options={chapters}
@@ -102,8 +102,8 @@ const CreateCourse = () => {
                   )}
                 </Card>
               </Grid>
-              <Grid item xs={12}>
-                <Card sx={{ minHeight: "50px", maxHeight: "600px", overflowY: "auto", padding: 2 }}>
+              <Grid item xs={6}>
+                <Card sx={{ minHeight: "90px", maxHeight: "600px", overflowY: "auto", padding: 2 }}>
                   <MDInput
                     label="Title"
                     size="large"
@@ -128,7 +128,7 @@ const CreateCourse = () => {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={12}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Card
@@ -141,7 +141,7 @@ const CreateCourse = () => {
                   />
                 </Card>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={3}>
                 <Card sx={{ minHeight: "50px", maxHeight: "600px", overflowY: "auto", padding: 2 }}>
                   <MDButton
                     variant="gradient"

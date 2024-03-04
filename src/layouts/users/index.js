@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Typography, Grid } from "@mui/material";
+import { Typography, Grid, Card } from "@mui/material";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import MDBox from "components/MDBox";
@@ -66,6 +66,7 @@ function Users() {
             </MDButton>
           </Grid>
           <Grid item xs={12}>
+          <Card sx={{ minHeight: "640px", overflowY: "auto", padding: 2 }}>
             <DataTable
               table={{
                 columns: [
@@ -108,6 +109,7 @@ function Users() {
               isSorted={true}
               noEndBorder={false}
             />
+            </Card>
           </Grid>
         </Grid>
       </MDBox>

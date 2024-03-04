@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Typography, Grid } from "@mui/material";
+import { Typography, Grid, Card } from "@mui/material";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import MDBox from "components/MDBox";
@@ -49,11 +49,14 @@ function ChapterList() {
               Add Chapter
             </MDButton>
           </Grid>
+          
           <Grid item xs={12}>
+          <Card sx={{ minHeight: "650px", overflowY: "auto", padding: 2 }}>
             <DataTable
               table={{
                 columns: [
                   { Header: "Title", accessor: "title", width: "20%" },
+                  // { Header: "Description", accessor: "description", width: "20%" },
                   { Header: "Created Time", accessor: "createdTime", width: "20%" },
                   { Header: "Update Time", accessor: "updateTime" },
                   { Header: "Number of Challenges", accessor: "numberOfChallenges", width: "20%" },
@@ -61,6 +64,7 @@ function ChapterList() {
                 ],
                 rows: chapters.map((chapter) => ({
                   title: chapter.title,
+                  // description: chapter.description,
                   numberOfChallenges: chapter.challenges.length,
                   createdTime: `${formatDate(chapter.created_at)}`,
                   updateTime: `${formatDate(chapter.updated_at)}`,
@@ -84,6 +88,7 @@ function ChapterList() {
               isSorted={true}
               noEndBorder={false}
             />
+            </Card>
           </Grid>
         </Grid>
       </MDBox>

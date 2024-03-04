@@ -34,7 +34,7 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 
 function Dashboard() {
@@ -42,51 +42,20 @@ function Dashboard() {
   const [users, setUsers] = useState([]);
   const [increaseThisWeek, setIncreaseThisWeek] = useState(false);
   const [lastWeekUsers, setLastWeekUsers] = useState([]);
-  console.log("lastWeekUsers  "+ lastWeekUsers.created_at);
+  // console.log("lastWeekUsers  "+ lastWeekUsers.created_at);
 
   const [challenges, setChallenges] = useState([]);
   const [increaseChallengesThisWeek, setIncreaseChallengesThisWeek] = useState(false);
   const [lastWeekChallenges, setLastWeekChallenges] = useState([]);
 
   useEffect(() => {
-    // Fetch code challenges data from the API
-    axios
-      .get("http://localhost:8000/api/content/coding_challenges/")
-      .then((response) => {
-        setChallenges(response.data);
-
-        // Calculate the challenges created in the last 7 days
-        const now = new Date();
-        const thisWeekChallenges = response.data.filter((challenge) => {
-          const challengeCreatedAt = new Date(challenge.created_at);
-          const daysDiff = Math.floor((now - challengeCreatedAt) / (1000 * 60 * 60 * 24));
-          return daysDiff <= 7;
-        });
-
-        setIncreaseChallengesThisWeek(thisWeekChallenges.length > 0);
-
-        // Calculate the challenges created in the last week
-        const lastWeekStartDate = new Date();
-        lastWeekStartDate.setDate(lastWeekStartDate.getDate() - 7);
-        const lastWeekChallenges = response.data.filter((challenge) => {
-          const challengeCreatedAt = new Date(challenge.created_at);
-          return challengeCreatedAt >= lastWeekStartDate && challengeCreatedAt < now;
-        });
-
-        setLastWeekChallenges(lastWeekChallenges);
-      })
-      .catch((error) => {
-        console.error("Error fetching code challenges:", error);
-      });
-  }, []);
-
-  useEffect(() => {
     // Fetch users data from the API
     axios
       .get("http://localhost:8000/api/auth/get_users/")
       .then((response) => {
+        // console.log("Fetched users data:", response.data);
         setUsers(response.data);
-
+  
         // Calculate the users created in the last 7 days
         const now = new Date();
         const thisWeekUsers = response.data.filter((user) => {
@@ -94,33 +63,92 @@ function Dashboard() {
           const daysDiff = Math.floor((now - userCreatedAt) / (1000 * 60 * 60 * 24));
           return daysDiff <= 7;
         });
-
+  
+        // console.log("thisWeekUsers:", thisWeekUsers);
+  
         setIncreaseThisWeek(thisWeekUsers.length > 0);
-
+  
         // Calculate the users created in the last week
         const lastWeekStartDate = new Date();
         lastWeekStartDate.setDate(lastWeekStartDate.getDate() - 7);
         const lastWeekUsers = response.data.filter((user) => {
-          
           const userCreatedAt = new Date(user.created_at);
           return userCreatedAt >= lastWeekStartDate && userCreatedAt < now;
         });
-
-        setLastWeekUsers(lastWeekUsers);
+  
+        // console.log("lastWeekUsers:", lastWeekUsers);
+        setLastWeekUsers(lastWeekUsers);  // Set lastWeekUsers state here
       })
       .catch((error) => {
         console.error("Error fetching users:", error);
       });
   }, []);
 
-  // Calculate the percentage change
-  const percentageChange = lastWeekUsers.length
-    ? ((users.length - lastWeekUsers.length) / lastWeekUsers.length) * 100
-    : 0;
+  useEffect(() => {
+    // Fetch code challenges data from the API
+    axios
+      .get("http://localhost:8000/api/content/coding_challenges/")
+      .then((response) => {
+        // console.log("Fetched challenges data:", response.data);
+        setChallenges(response.data);
+  
+        // Calculate the challenges created in the last 7 days
+        const now = new Date();
+        const thisWeekChallenges = response.data.filter((challenge) => {
+          const challengeCreatedAt = new Date(challenge.created_at);
+          const daysDiff = Math.floor((now - challengeCreatedAt) / (1000 * 60 * 60 * 24));
+          return daysDiff <= 7;
+        });
+  
+        // console.log("thisWeekChallenges:", thisWeekChallenges);
+  
+        setIncreaseChallengesThisWeek(thisWeekChallenges.length > 0);
+  
+        // Calculate the challenges created in the last week
+        const lastWeekStartDate = new Date();
+        lastWeekStartDate.setDate(lastWeekStartDate.getDate() - 7);
+        const lastWeekChallenges = response.data.filter((challenge) => {
+          const challengeCreatedAt = new Date(challenge.created_at);
+          return challengeCreatedAt >= lastWeekStartDate && challengeCreatedAt < now;
+        });
+  
+        // console.log("lastWeekChallenges:", lastWeekChallenges);
+  
+        setLastWeekChallenges(lastWeekChallenges);  // Set lastWeekChallenges state here
+      })
+      .catch((error) => {
+        console.error("Error fetching code challenges:", error);
+      });
+  }, []);
+  
+  
 
-  const percentageChangeChallenges = lastWeekChallenges.length
-    ? ((challenges.length - lastWeekChallenges.length) / lastWeekChallenges.length) * 100
-    : 0;
+  const percentageChange = useMemo(() => {
+    if (lastWeekUsers.length > 0) {
+      return ((users.length + lastWeekUsers.length) / lastWeekUsers.length) * 100;
+    } else {
+      return 0;
+    }
+  }, [users, lastWeekUsers]);
+  
+  const displayPercentageChange = increaseThisWeek
+    ? `+${Math.abs(percentageChange).toFixed(2)}%`
+    : `-${Math.abs(percentageChange).toFixed(2)}%`;
+  
+  // Calculate the percentage change for Code Challenges
+  const percentageChangeChallenges = useMemo(() => {
+    if (lastWeekChallenges.length > 0) {
+      return ((challenges.length + lastWeekChallenges.length) / lastWeekChallenges.length) * 100;
+    } else {
+      return 0;
+    }
+  }, [challenges, lastWeekChallenges]);
+  
+  const displayPercentageChangeChallenges = increaseChallengesThisWeek
+    ? `+${Math.abs(percentageChangeChallenges).toFixed(2)}%`
+    : `-${Math.abs(percentageChangeChallenges).toFixed(2)}%`;
+  
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -134,9 +162,7 @@ function Dashboard() {
                 count={users.length}
                 percentage={{
                   color: increaseThisWeek ? "success" : "error",
-                  amount: increaseThisWeek
-                    ? `+${percentageChange.toFixed(2)}%`
-                    : `-${percentageChange.toFixed(2)}%`,
+                  amount: displayPercentageChange,
                   label: increaseThisWeek ? "than last week" : "this week",
                 }}
               />
@@ -148,12 +174,9 @@ function Dashboard() {
                 icon="code"
                 title="Code Challenges"
                 count={challenges.length}
-                // Customize the percentage as needed
                 percentage={{
                   color: increaseChallengesThisWeek ? "info" : "error",
-                  amount: increaseChallengesThisWeek
-                    ? `+${percentageChangeChallenges.toFixed(2)}%`
-                    : `-${percentageChangeChallenges.toFixed(2)}%`,
+                  amount: displayPercentageChangeChallenges,
                   label: increaseChallengesThisWeek ? "than last week" : "this week",
                 }}
               />

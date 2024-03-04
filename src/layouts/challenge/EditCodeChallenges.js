@@ -8,7 +8,7 @@ import Footer from "examples/Footer";
 import MDEditor from "@uiw/react-md-editor";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Editor } from "@monaco-editor/react";
 
 const EditCodeChallenges = () => {
@@ -22,6 +22,7 @@ const EditCodeChallenges = () => {
   const [functionSignature, setFunctionSignature] = useState("");
   const [testCases, setTestCases] = useState([]);
   const [chapters, setChapters] = useState([]);
+  let navigate = useNavigate();
 
   useEffect(() => {
     const fetchChallengeDetails = async () => {
@@ -69,6 +70,7 @@ const EditCodeChallenges = () => {
         code,
         testcases: testCases,
       });
+      navigate("/chapters");
       // Handle success, e.g., redirect to a new page or show a success message
     } catch (error) {
       if (error.response && error.response.data && error.response.data.error) {
@@ -88,7 +90,7 @@ const EditCodeChallenges = () => {
       setChapterId("");
     }
   };
-  
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -110,7 +112,7 @@ const EditCodeChallenges = () => {
                     renderInput={(params) => <MDInput {...params} label="Chapter" />}
                     value={chapters.find((chapter) => chapter.id === chapterId)}
                     onChange={handleChapterChange}
-                    required 
+                    required
                   />
                 </Card>
               </Grid>
@@ -122,7 +124,7 @@ const EditCodeChallenges = () => {
                     size="large"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    required 
+                    required
                   />
                 </Card>
               </Grid>
@@ -132,7 +134,7 @@ const EditCodeChallenges = () => {
                   sx={{ minHeight: "200px", maxHeight: "600px", overflowY: "auto", padding: 2 }}
                 >
                   <Typography variant="h6">Goal</Typography>
-                  <MDEditor value={goal} onChange={setGoal} />
+                  <MDEditor data-color-mode="light" value={goal} onChange={setGoal} />
                 </Card>
               </Grid>
               {/* code challenge description */}
@@ -141,7 +143,7 @@ const EditCodeChallenges = () => {
                   sx={{ minHeight: "200px", maxHeight: "600px", overflowY: "auto", padding: 2 }}
                 >
                   <Typography variant="h6">Description</Typography>
-                  <MDEditor value={description} onChange={setDescription} />
+                  <MDEditor data-color-mode="light" value={description} onChange={setDescription} />
                 </Card>
               </Grid>
               {/* constrains */}
@@ -150,7 +152,7 @@ const EditCodeChallenges = () => {
                   sx={{ minHeight: "200px", maxHeight: "600px", overflowY: "auto", padding: 2 }}
                 >
                   <Typography variant="h6">Constraints</Typography>
-                  <MDEditor value={constrains} onChange={setConstrains} />
+                  <MDEditor data-color-mode="light" value={constrains} onChange={setConstrains} />
                 </Card>
               </Grid>
             </Grid>

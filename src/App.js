@@ -324,7 +324,7 @@ export default function App() {
           key="create-user"
         />
 
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        <Route path="*" element={<Navigate to="authentication/sign-in" />} />
       </Routes>
     </ThemeProvider>
   );

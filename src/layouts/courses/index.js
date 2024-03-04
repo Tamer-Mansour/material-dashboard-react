@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Grid } from "@mui/material";
+import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
@@ -42,47 +42,45 @@ const Courses = () => {
       <DashboardNavbar />
       <MDBox py={3}>
         <Grid container spacing={3}>
-          <Grid item xs={10}>
-            <MDButton variant="gradient" color="info" onClick={handleAddCourse}>
-              Add User
-            </MDButton>
-          </Grid>
+          <Grid item xs={10}></Grid>
           <Grid item sx={2}>
-            <MDButton variant="gradient" color="info">
+            <MDButton variant="gradient" color="info" onClick={handleAddCourse}>
               Add course
             </MDButton>
           </Grid>
           <Grid item xs={12}>
-            <DataTable
-              table={{
-                columns: [
-                  { Header: "Title", accessor: "title" },
-                  { Header: "Description", accessor: "description" },
-                  { Header: "Content", accessor: "content" },
-                  { Header: "Chapter", accessor: "chapter" },
-                  { Header: "Actions", accessor: "actions" },
-                ],
-                rows: courses.map((course) => ({
-                  title: course.title,
-                  description: course.description,
-                  content: course.content,
-                  chapter: course.chapter,
-                  actions: (
-                    <>
-                      <MDButton variant="caption" color="text" href={`/course/${course.id}/edit`}>
-                        View
-                      </MDButton>
-                    </>
-                  ),
-                })),
-              }}
-              canSearch={true}
-              pagination={{ variant: "contained", color: "info" }}
-              entriesPerPage={{ defaultValue: 10, entries: [5, 10, 15, 20, 25] }}
-              showTotalEntries={true}
-              isSorted={true}
-              noEndBorder={false}
-            />
+            <Card sx={{ minHeight: "640px", overflowY: "auto", padding: 2 }}>
+              <DataTable
+                table={{
+                  columns: [
+                    { Header: "Title", accessor: "title" },
+                    { Header: "Description", accessor: "description" },
+                    { Header: "Content", accessor: "content" },
+                    { Header: "Chapter", accessor: "chapter" },
+                    { Header: "Actions", accessor: "actions" },
+                  ],
+                  rows: courses.map((course) => ({
+                    title: course.title,
+                    description: course.description,
+                    content: course.content,
+                    chapter: course.chapter,
+                    actions: (
+                      <>
+                        <MDButton variant="caption" color="text" href={`/course/${course.id}/edit`}>
+                          View
+                        </MDButton>
+                      </>
+                    ),
+                  })),
+                }}
+                canSearch={true}
+                pagination={{ variant: "contained", color: "info" }}
+                entriesPerPage={{ defaultValue: 10, entries: [5, 10, 15, 20, 25] }}
+                showTotalEntries={true}
+                isSorted={true}
+                noEndBorder={false}
+              />
+            </Card>
           </Grid>
         </Grid>
       </MDBox>

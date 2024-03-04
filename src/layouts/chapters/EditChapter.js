@@ -11,11 +11,13 @@ import MDInput from "components/MDInput";
 import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
 import MDSnackbar from "components/MDSnackbar";
+import MDEditor from "@uiw/react-md-editor";
 
 function EditChapter() {
   const { id } = useParams();
 
   const [chapterTitle, setChapterTitle] = useState("");
+  const [chapterDescription, setChapterDescription] = useState("");
   const [challenges, setChallenges] = useState([]);
   const [openConfirmDeleteDialog, setOpenConfirmDeleteDialog] = useState(false);
   const [openConfirmEditDialog, setOpenConfirmEditDialog] = useState(false);
@@ -32,6 +34,7 @@ function EditChapter() {
           `http://localhost:8000/api/content/chapters/${id}/challenges/`
         );
         setChapterTitle(response.data.title);
+        setChapterDescription(response.data.description);
         setChallenges(response.data.challenges);
       } catch (error) {
         console.error("Error fetching chapter:", error);
@@ -44,11 +47,11 @@ function EditChapter() {
   const handleChangeChapterTitle = (event) => {
     setChapterTitle(event.target.value);
   };
-
   const handleEditChapterSubmit = async () => {
     try {
       await axios.put(`http://localhost:8000/api/content/chapters/${id}/edit/`, {
         title: chapterTitle,
+        description: chapterDescription,
       });
       setSuccessSB(true);
       setSnackbarText("Chapter edited successfully");
@@ -117,12 +120,21 @@ function EditChapter() {
                     <MDTypography variant="h3">Edit Chapter</MDTypography>
                   </Grid>
                   <Grid item xs={12}>
+                    <MDTypography variant="h5">Chapter Title</MDTypography>
                     <MDInput
                       type="text"
-                      label="Chapter Title"
                       value={chapterTitle}
                       onChange={handleChangeChapterTitle}
                       fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <MDTypography variant="h5">Chapter Description</MDTypography>
+                    <MDEditor
+                      height="400px"
+                      data-color-mode="light"
+                      value={chapterDescription}
+                      onChange={setChapterDescription}
                     />
                   </Grid>
                   <Grid item xs={2}>
