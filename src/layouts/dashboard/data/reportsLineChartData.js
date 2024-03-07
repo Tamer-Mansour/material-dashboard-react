@@ -15,11 +15,14 @@ Coded by www.creative-tim.com
 
 export default {
   sales: {
-    labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-    datasets: { label: "Mobile apps", data: [50, 40, 300, 320, 500, 350, 200, 230, 500] },
+    labels: ["Mon", "Tue", "Wed", "Wed", "Fri", "Sat", "Sun"],
+    datasets: { label: "Mobile apps", data: [27, 52, 18, 65, 0, 74, 34, 56, 23] },
   },
   tasks: {
-    labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-    datasets: { label: "Desktop apps", data: [50, 40, 300, 220, 500, 250, 400, 230, 500] },
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    datasets: {
+      label: "Desktop apps",
+      data: [732, 869, 591, 913, 754, 621, 837, 569, 725, 890, 648, 776],
+    },
   },
 };

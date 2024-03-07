@@ -88,7 +88,12 @@ const EditProfile = () => {
   };
 
   if (loading || !dataFetched) {
-    return <CircularProgress />;
+    return (
+      <DashboardLayout>
+        <DashboardNavbar />
+        <CircularProgress />
+      </DashboardLayout>
+    );
   }
   return (
     <DashboardLayout>
@@ -96,7 +101,7 @@ const EditProfile = () => {
       <MDBox py={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <MDTypography variant="h2">Edit {userData?.first_name}'s  profile</MDTypography>
+            <MDTypography variant="h2">Edit {userData?.first_name}'s profile</MDTypography>
           </Grid>
           <Grid item xs={12} md={12}>
             <Card sx={{ minHeight: "650px", maxHeight: "650px", overflowY: "auto", padding: 2 }}>
@@ -187,7 +192,7 @@ const EditProfile = () => {
                       type="file"
                       fullWidth
                       inputProps={{
-                        multiple: true
+                        multiple: true,
                       }}
                       onChange={(e) => handleFileChange(e, "avatar")}
                     />

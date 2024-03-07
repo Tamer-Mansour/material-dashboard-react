@@ -47,6 +47,8 @@ function Dashboard() {
   const [challenges, setChallenges] = useState([]);
   const [increaseChallengesThisWeek, setIncreaseChallengesThisWeek] = useState(false);
   const [lastWeekChallenges, setLastWeekChallenges] = useState([]);
+  const [lastUpdatedUser, setLastUpdatedUser] = useState(null);
+  const [lastUpdatedChallenge, setLastUpdatedChallenge] = useState(null);
 
   useEffect(() => {
     // Fetch users data from the API
@@ -55,7 +57,7 @@ function Dashboard() {
       .then((response) => {
         // console.log("Fetched users data:", response.data);
         setUsers(response.data);
-  
+
         // Calculate the users created in the last 7 days
         const now = new Date();
         const thisWeekUsers = response.data.filter((user) => {
@@ -63,11 +65,11 @@ function Dashboard() {
           const daysDiff = Math.floor((now - userCreatedAt) / (1000 * 60 * 60 * 24));
           return daysDiff <= 7;
         });
-  
+
         // console.log("thisWeekUsers:", thisWeekUsers);
-  
+
         setIncreaseThisWeek(thisWeekUsers.length > 0);
-  
+
         // Calculate the users created in the last week
         const lastWeekStartDate = new Date();
         lastWeekStartDate.setDate(lastWeekStartDate.getDate() - 7);
@@ -75,9 +77,14 @@ function Dashboard() {
           const userCreatedAt = new Date(user.created_at);
           return userCreatedAt >= lastWeekStartDate && userCreatedAt < now;
         });
-  
+
         // console.log("lastWeekUsers:", lastWeekUsers);
-        setLastWeekUsers(lastWeekUsers);  // Set lastWeekUsers state here
+        setLastWeekUsers(lastWeekUsers); // Set lastWeekUsers state here
+        const sortedUsers = response.data.sort(
+          (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+        );
+        const latestUpdatedUser = sortedUsers.length > 0 ? sortedUsers[0] : null;
+        setLastUpdatedUser(latestUpdatedUser);
       })
       .catch((error) => {
         console.error("Error fetching users:", error);
@@ -91,7 +98,7 @@ function Dashboard() {
       .then((response) => {
         // console.log("Fetched challenges data:", response.data);
         setChallenges(response.data);
-  
+
         // Calculate the challenges created in the last 7 days
         const now = new Date();
         const thisWeekChallenges = response.data.filter((challenge) => {
@@ -99,11 +106,11 @@ function Dashboard() {
           const daysDiff = Math.floor((now - challengeCreatedAt) / (1000 * 60 * 60 * 24));
           return daysDiff <= 7;
         });
-  
+
         // console.log("thisWeekChallenges:", thisWeekChallenges);
-  
+
         setIncreaseChallengesThisWeek(thisWeekChallenges.length > 0);
-  
+
         // Calculate the challenges created in the last week
         const lastWeekStartDate = new Date();
         lastWeekStartDate.setDate(lastWeekStartDate.getDate() - 7);
@@ -111,17 +118,21 @@ function Dashboard() {
           const challengeCreatedAt = new Date(challenge.created_at);
           return challengeCreatedAt >= lastWeekStartDate && challengeCreatedAt < now;
         });
-  
+
         // console.log("lastWeekChallenges:", lastWeekChallenges);
-  
-        setLastWeekChallenges(lastWeekChallenges);  // Set lastWeekChallenges state here
+
+        setLastWeekChallenges(lastWeekChallenges); // Set lastWeekChallenges state here
+        // Find the challenge with the latest updated date
+        const sortedChallenges = response.data.sort(
+          (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+        );
+        const latestUpdatedChallenge = sortedChallenges.length > 0 ? sortedChallenges[0] : null;
+        setLastUpdatedChallenge(latestUpdatedChallenge);
       })
       .catch((error) => {
         console.error("Error fetching code challenges:", error);
       });
   }, []);
-  
-  
 
   const percentageChange = useMemo(() => {
     if (lastWeekUsers.length > 0) {
@@ -130,11 +141,11 @@ function Dashboard() {
       return 0;
     }
   }, [users, lastWeekUsers]);
-  
+
   const displayPercentageChange = increaseThisWeek
     ? `+${Math.abs(percentageChange).toFixed(2)}%`
     : `-${Math.abs(percentageChange).toFixed(2)}%`;
-  
+
   // Calculate the percentage change for Code Challenges
   const percentageChangeChallenges = useMemo(() => {
     if (lastWeekChallenges.length > 0) {
@@ -143,12 +154,33 @@ function Dashboard() {
       return 0;
     }
   }, [challenges, lastWeekChallenges]);
-  
+
   const displayPercentageChangeChallenges = increaseChallengesThisWeek
     ? `+${Math.abs(percentageChangeChallenges).toFixed(2)}%`
     : `-${Math.abs(percentageChangeChallenges).toFixed(2)}%`;
-  
 
+  const formatDateString = (dateString) => {
+    const currentDate = new Date();
+    const targetDate = new Date(dateString);
+    const daysDiff = Math.floor((currentDate - targetDate) / (1000 * 60 * 60 * 24));
+
+    if (daysDiff === 0) {
+      return "today";
+    } else if (daysDiff === 1) {
+      return "yesterday";
+    } else if (daysDiff <= 7) {
+      return `${daysDiff} days ago`;
+    } else if (daysDiff > 7 && daysDiff <= 14) {
+      return "1 week ago";
+    } else if (daysDiff > 14 && daysDiff <= 21) {
+      return "2 weeks ago";
+    } else if (daysDiff > 21 && daysDiff <= 28) {
+      return "3 weeks ago";
+    } else {
+      const options = { year: "numeric", month: "numeric", day: "numeric" };
+      return targetDate.toLocaleDateString(undefined, options);
+    }
+  };
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -186,13 +218,16 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="success"
-                icon="store"
-                title="Revenue"
-                count="34k"
+                icon="person"
+                title="User Updated"
+                count={
+                  lastUpdatedUser
+                    ? `${lastUpdatedUser.first_name} ${lastUpdatedUser.last_name}`
+                    : "N/A"
+                }
                 percentage={{
-                  color: "success",
-                  amount: "+1%",
-                  label: "than yesterday",
+                  amount: lastUpdatedUser ? formatDateString(lastUpdatedUser.created_at) : "N/A",
+                  label: "Registered",
                 }}
               />
             </MDBox>
@@ -201,13 +236,16 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="primary"
-                icon="person_add"
-                title="Followers"
-                count="+91"
+                icon="code"
+                title="Last Updated Challenge"
+                count={
+                  lastUpdatedChallenge ? `Challenge number: ${lastUpdatedChallenge.id}` : "N/A"
+                }
                 percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "Just updated",
+                  amount: lastUpdatedChallenge
+                    ? formatDateString(lastUpdatedChallenge.created_at)
+                    : "N/A",
+                  label: "Created",
                 }}
               />
             </MDBox>
@@ -220,8 +258,8 @@ function Dashboard() {
                 <ReportsBarChart
                   color="primary"
                   title="website views"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
+                  description="Total login per day"
+                  date="last login less than minute ago"
                   chart={reportsBarChartData}
                 />
               </MDBox>
@@ -230,13 +268,13 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="daily sales"
+                  title="daily solutions"
                   description={
                     <>
-                      (<strong>+15%</strong>) increase in today sales.
+                      (<strong>+23%</strong>) increase in today.
                     </>
                   }
-                  date="updated 4 min ago"
+                  date="last submit 4 min ago"
                   chart={sales}
                 />
               </MDBox>
@@ -245,9 +283,13 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="dark"
-                  title="completed tasks"
-                  description="Last Campaign Performance"
-                  date="just updated"
+                  title="Monthly solutions"
+                  description={
+                    <>
+                      (<strong>+15%</strong>) increase than yast year.
+                    </>
+                  }
+                  date="last submit 4 min ago"
                   chart={tasks}
                 />
               </MDBox>

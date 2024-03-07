@@ -88,13 +88,23 @@ function Overview() {
   }, []);
 
   if (loading || !dataFetched) {
-    return <CircularProgress />;
+    return (
+      <DashboardLayout>
+        <DashboardNavbar />
+        <CircularProgress />
+      </DashboardLayout>
+    );
   }
   return (
     <DashboardLayout>
       <DashboardNavbar />
       {loading ? (
-        <CircularProgress />
+        <DashboardLayout>
+          <DashboardNavbar />
+          <MDBox m={12}>
+            <CircularProgress />
+          </MDBox>
+        </DashboardLayout>
       ) : (
         <>
           <MDBox mb={2} />

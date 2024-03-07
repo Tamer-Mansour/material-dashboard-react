@@ -62,53 +62,62 @@ function Users() {
           </Grid>
           <Grid item sx={2}>
             <MDButton variant="gradient" color="info" onClick={handleAddUser}>
-              Add User
+              Register New User
             </MDButton>
           </Grid>
           <Grid item xs={12}>
-          <Card sx={{ minHeight: "640px", overflowY: "auto", padding: 2 }}>
-            <DataTable
-              table={{
-                columns: [
-                  { Header: "Avatar", accessor: "avatar" },
-                  { Header: "Username", accessor: "username" },
-                  { Header: "First Name", accessor: "first_name" },
-                  { Header: "Last Name", accessor: "last_name" },
-                  { Header: "Email", accessor: "email" },
-                  { Header: "Role", accessor: "role" },
-                  { Header: "Created At", accessor: "created_at" },
-                  { Header: "Updated At", accessor: "updated_at" },
-                  { Header: "Actions", accessor: "actions" },
-                ],
-                rows: users.map((user) => ({
-                  avatar:(
-                    <>
-                    <MDAvatar src={`http://localhost:8000${user?.avatar}`} alt="user-image" size="xl" shadow="sm" />
-                    </>
-                  ),
-                  first_name: user.first_name,
-                  last_name: user.last_name,
-                  username: user.username,
-                  email: user.email,
-                  role: user.role,
-                  created_at: formatDate(user.created_at),
-                  updated_at: formatDate(user.updated_at),
-                  actions: (
-                    <>
-                      <MDButton variant="caption" color="text" href={`/users/${user.id}/edit-user`}>
-                        View
-                      </MDButton>
-                    </>
-                  ),
-                })),
-              }}
-              canSearch={true}
-              pagination={{ variant: "contained", color: "info" }}
-              entriesPerPage={{ defaultValue: 10, entries: [5, 10, 15, 20, 25] }}
-              showTotalEntries={true}
-              isSorted={true}
-              noEndBorder={false}
-            />
+            <Card sx={{ minHeight: "640px", overflowY: "auto", padding: 2 }}>
+              <DataTable
+                table={{
+                  columns: [
+                    { Header: "Avatar", accessor: "avatar" },
+                    { Header: "Username", accessor: "username" },
+                    { Header: "First Name", accessor: "first_name" },
+                    { Header: "Last Name", accessor: "last_name" },
+                    { Header: "Email", accessor: "email" },
+                    { Header: "Role", accessor: "role" },
+                    { Header: "Created At", accessor: "created_at" },
+                    { Header: "Updated At", accessor: "updated_at" },
+                    { Header: "Actions", accessor: "actions" },
+                  ],
+                  rows: users.map((user) => ({
+                    avatar: (
+                      <>
+                        <MDAvatar
+                          src={`http://localhost:8000${user?.avatar}`}
+                          alt="user-image"
+                          size="md"
+                          shadow="sm"
+                        />
+                      </>
+                    ),
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    username: user.username,
+                    email: user.email,
+                    role: user.role,
+                    created_at: formatDate(user.created_at),
+                    updated_at: formatDate(user.updated_at),
+                    actions: (
+                      <>
+                        <MDButton
+                          variant="caption"
+                          color="text"
+                          href={`/users/${user.id}/edit-user`}
+                        >
+                          View
+                        </MDButton>
+                      </>
+                    ),
+                  })),
+                }}
+                canSearch={true}
+                pagination={{ variant: "contained", color: "info" }}
+                entriesPerPage={{ defaultValue: 10, entries: [5, 10, 15, 20, 25] }}
+                showTotalEntries={true}
+                isSorted={true}
+                noEndBorder={false}
+              />
             </Card>
           </Grid>
         </Grid>

@@ -20,6 +20,7 @@ import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useUserQuery } from "custom_hooks/AuthQuery/useUsersQuery";
+import MDAvatar from "components/MDAvatar";
 
 function UserData() {
   const { id } = useParams();
@@ -95,6 +96,16 @@ function UserData() {
                 >
                   <Grid container spacing={3}>
                     {/* Other user details inputs */}
+                    <Grid item sx={12} >
+                    <>
+                        <MDAvatar
+                          src={`http://localhost:8000${user?.avatar}`}
+                          alt="user-image"
+                          size="xxl"
+                          shadow="sm"
+                        />
+                      </>
+                    </Grid>
                     <Grid item xs={12}>
                       <Typography variant="h6">username</Typography>
                       <MDInput value={user?.username} type="text" fullWidth disabled />
@@ -112,6 +123,10 @@ function UserData() {
                       <MDInput value={user?.email} type="text" fullWidth disabled />
                     </Grid>
                     <Grid item xs={12}>
+                      <Typography variant="h6">Bio</Typography>
+                      <MDInput value={user?.description} type="text" multiline rows={5} fullWidth disabled />
+                    </Grid>
+                    <Grid item xs={12}>
                       <Typography variant="h6">Role</Typography>
                       <Autocomplete
                         options={roles}
@@ -126,11 +141,11 @@ function UserData() {
                     <Grid item xs={4}>
                       <Typography variant="h6">Actions</Typography>
                       <Grid container spacing={3}>
-                        <Grid item xs={6}>
+                        {/* <Grid item xs={6}>
                           <MDButton variant="gradient" color="info" onClick={handleUpdateUser}>
                             Update User
                           </MDButton>
-                        </Grid>
+                        </Grid> */}
                         <Grid item xs={6}>
                           <MDButton variant="gradient" color="error" onClick={handleDeleteUser}>
                             Delete User
